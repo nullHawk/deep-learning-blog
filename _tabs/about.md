@@ -11,6 +11,7 @@ I build intelligent systems that can learn and adapt — ideas inspired by the b
 - Deep Learning
 - Natural Language Processing (NLP)
 - Automatic Speech Recognition (ASR)
+- Brain-Computer Interfacing (BCI)
 
 Lately, I’ve gone back to the roots, relearning deep learning from the ground up. I’m also quite fascinated by how the brain works, and how we might one day bridge the gap between machines and minds (Brain-Computer Interfaces, if you will).
 
