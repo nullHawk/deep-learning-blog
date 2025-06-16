@@ -15,7 +15,7 @@ In this post, we'll discuss about Perceptron and MLPs (Multi-layer Perceptrons) 
 ## Inspiration
 
 Perceptron's roots lie in a 1943 paper by Warren McCulloch and Walter Pitts, where they pruposed a simple model of biological neuron. The neuron's cell body recieves input via its treelike projections, called dendrites. The cell body performs some computation on these inputs. Then, based on the results of that computation, it may send an electrical signal spiking along another, longer projection, called the axon. That signal travels along the axon and reaches its branching terminals, where it's communicated to the dedrites of neighboring neurons. And so it goes. Neurons interconnected in this manner form a biological netowrk.
-![Biological neuron structure](https://www.researchgate.net/profile/Ana-Claudia-Neves/publication/320384373/figure/fig2/AS:682337809469452@1539693419868/The-biological-neuron.png)
+![Biological neuron structure](https://i.ibb.co/F459kq5C/biological-neuron.jpg)
 *Figure: Structure of a biological neuron showing dendrites, cell body, axon, and synaptic terminals.*
 McCulloch and Pitts turned this into a simple computational model, and artificial neuron. They showed how by using one such artifical neoron, or neurode(for "neuron" + "node"), one could implement certain basic Boolean logical operations such as AND, OR, NOT and so on, which are building blocks of digital computation.
 ![McCulloch-Pitts model](https://i.ibb.co/rGkK9VMZ/neurode.png)
