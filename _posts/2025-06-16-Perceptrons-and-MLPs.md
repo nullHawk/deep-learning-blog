@@ -72,7 +72,7 @@ $$
 f(z) = 
 \begin{cases}
 1, &  z > 0 \\
--1, & z leq 0
+-1, & z \leq 0
 \end{cases}
 $$
 
@@ -85,6 +85,81 @@ y = f(g(x)) =
 $$
 
 The main difference from the MCP model presented earlier is that the perceptron's input don't have binary (0 or 1), but can take on any value. Also these inputs are multiplied b their corresponding wights, so we now have a weighted sum. Added to that is an additional term b, the bias.
+
+### Training a Perceptron
+- **Step 1:** Initialise weight vector to zero
+- **Step 2:** for each data point $x$ in the training dataset, do the following
+
+    $$
+    \begin{aligned}
+    \text{if prediction} \neq y: \\
+    w_{\text{new}} &= w_{\text{old}} + \eta \cdot y \cdot x \\
+    b_{\text{new}} &= b_{\text{old}} + \eta \cdot y
+    \end{aligned}
+    $$
+- **Step 3:** If there were no updates to the weight vector in Step 2, terminate other wise go to Step 2 and itrate overall the datapoints again.
+
+You can find a code implementation of perceptron in [this repository](https://github.com/nullHawk/deep_learning/blob/main/perceptron%26mlp/perceptron.py)
+
+### Perceptron Convergenge Proof
+The perceptron convergence theorem states that if the training data is linearly separable, the perceptron learning algorithm will converge to a solution in a finite number of steps. This means that it will find a set of weights and bias that correctly classifies all training examples.
+$$
+\begin{aligned}
+\text{Let } w \text{ be the weight vector and } b \text{ be the bias.} \\
+\text{final bound} : t \leq \frac{R^2}{\gamma^2} \\
+\text{where } \gamma \text{ is the minimum distance from the dataset point to the ideal decision boundary} \\
+\end{aligned}
+$$
+
+You can read more about the perceptron convergence theorem in [this paper](https://www.cs.columbia.edu/~mcollins/courses/6998-2012/notes/perc.converge.pdf).
+
+## Limitations of Perceptron
+- The perceptron can only learn linearly separable functions.
+- It cannot learn non-linear functions, such as XOR.
+- It can only output binary values (0 or 1), which limits its applicability to binary classification problems.
+- It is sensitive to the choice of learning rate, which can affect convergence.
+
+## Sigmoid neurons
+The perceptron is a powerful model, but it has its limitations. It can only output binary values (0 or 1). This means that it can only be used for binary classification problems. However, many real-world problems require a model that can output continuous values. For example, in regression problems, we want to predict a continuous value, such as the price of a house or the temperature of a city.
+To address this limitation, the sigmoid neuron was introduced. The sigmoid neuron is a perceptron that uses a sigmoid activation function instead of a step function. The sigmoid function is defined as:
+
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}}
+$$
+
+Advantages of using sigmoid activation function:
+- It can output continuous values between 0 and 1, making it suitable for regression problems
+- It is differentiable, which allows for the use of gradient descent to optimize the weights and bias
+- It has a smooth gradient, which helps to avoid the vanishing gradient problem
+- It is used in multi-layer perceptrons (MLPs)
+
+## Multi-layer Perceptrons (MLPs)
+Multi-layer perceptrons (MLPs) are a type of neural network that consists of multiple layers of neurons. Each layer is fully connected to the next layer, and each neuron in a layer receives input from all neurons in the previous layer. MLPs can be used for both classification and regression problems.
+
+![MLP](https://i.ibb.co/TxfGtH5d/MLP.png)
+*Figure: Structure of a Multi-layer Perceptron (MLP) with input, hidden, and output layers.*
+
+MLPs are composed of an input layer, one or more hidden layers, and an output layer. The input layer receives the input data, the hidden layers perform computations on the data, and the output layer produces the final output.
+
+### Working of MLPs
+Let's look at the key mechanisms of MLPs I will be discussing these in later blog posts in detail, but for now, here's a brief overview:
+
+1. **Forward Propagation**: The input data is passed through the network, layer by layer, until it reaches the output layer. Each neuron applies a weighted sum of its inputs, adds a bias term, and passes the result through an activation function.
+    - Weighted Sum: Each neuron computes a weighted sum of its inputs $z = \sum_{i} w_i x_i + b$
+    - Activation Function: Calculated $z$ is passed through activation function. Some of the commonly used activation functions are:
+        - Sigmoid($\sigma$): $\frac{1}{1 + e^{-z}}$
+        - ReLU(Rectified Linear Unit): $f(z) = \max(0, z)$
+        - Tanh: $tanh(z) = \frac{2}{1 + e^{-2z}} - 1$
+2. **Loss Function**: The output of the MLP is compared to the true labels using a loss function, which calculates the error between the predicted output and the true output. Common loss functions are:
+    - Mean Squared Error (MSE) for regression tasks: 
+      $$
+      \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+      $$
+    - Cross-Entropy Loss for classification tasks:
+      $$
+      \text{Cross-Entropy} = -\frac{1}{n}\sum_{i=1}^{n} y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i)
+      $$
+3. **Backpropagation**: 
 
 This article is still in progress...
 
