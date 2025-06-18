@@ -159,8 +159,46 @@ Let's look at the key mechanisms of MLPs I will be discussing these in later blo
       $$
       \text{Cross-Entropy} = -\frac{1}{n}\sum_{i=1}^{n} y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i)
       $$
-3. **Backpropagation**: 
+3. **Backpropagation**: Backpropagation is the process of calculating the gradients of the loss function with respect to the weights and biases of the MLP. This is done by applying the chain rule of calculus to propagate the error backward through the network. 
 
-This article is still in progress...
+   - For each neuron, the gradient of the loss with respect to the output is calculated:
+   $$
+   \frac{\partial L}{\partial \hat{y}} = \hat{y} - y
+   $$
+   where $\hat{y}$ is the predicted output and $y$ is the true label.
+   
+   - The gradient of the output with respect to the weighted sum $z$ is calculated using the derivative of the activation function:
+   $$
+   \frac{\partial \hat{y}}{\partial z} = \sigma'(z) = \sigma(z)(1 - \sigma(z))
+   $$
+   
+   - The gradient of the weighted sum with respect to each weight $w_i$ is calculated:
+   $$
+   \frac{\partial z}{\partial w_i} = x_i
+   $$
+   
+   - Finally, the gradient of the loss with respect to each weight is calculated using the chain rule:
+$$
+\frac{\partial L}{\partial w_i} = \frac{\partial L}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z} \cdot \frac{\partial z}{\partial w_i}
+$$
+
+4. **Optimization**:
+The weights and biases of the MLP are updated using an optimization algorithm, such as stochastic gradient descent (SGD) or Adam. The goal is to minimize the loss function by adjusting the weights and biases in the direction of the negative gradient. $\eta$ is the learning rate and $L$ is the loss function.
+
+$$
+w_i = w_i - \eta \cdot \frac{\partial L}{\partial w_i}
+$$
+
+$$
+b = b - \eta \cdot \frac{\partial L}{\partial b}
+$$
+
+Though I have summarized the these topics here but they need a detailed explanation. I will be writing separate blog posts on these topics in the future, so stay tuned!
+
+You can find the implementation of MLP in [this repository](https://github.com/nullHawk/deep_learning/blob/main/perceptron%26mlp/mlp.py)
+
+## Conclusion
+In this post, we explored the origins of perceptrons and how they evolved into multi-layer perceptrons (MLPs). We discussed the basic structure of perceptrons, their training process, and the limitations of single-layer perceptrons. We also introduced the concept of sigmoid neurons and how they paved the way for MLPs, which can learn complex patterns in data.
+MLPs are a powerful tool in deep learning, enabling us to tackle a wide range of problems, from image classification to natural language processing. As we continue our journey into deep learning, understanding the foundations of perceptrons and MLPs will be crucial for grasping more advanced concepts and architectures in the field. 
 
 
