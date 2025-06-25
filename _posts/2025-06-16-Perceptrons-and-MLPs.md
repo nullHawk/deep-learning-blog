@@ -130,7 +130,6 @@ $$
 Advantages of using sigmoid activation function:
 - It can output continuous values between 0 and 1, making it suitable for regression problems
 - It is differentiable, which allows for the use of gradient descent to optimize the weights and bias
-- It has a smooth gradient, which helps to avoid the vanishing gradient problem
 - It is used in multi-layer perceptrons (MLPs)
 
 ## Multi-layer Perceptrons (MLPs)
