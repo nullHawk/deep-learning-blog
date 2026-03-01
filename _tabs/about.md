@@ -3,6 +3,18 @@
 icon: fas fa-info-circle
 order: 4
 ---
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+  .content {
+    font-family: 'Special Elite', 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+  }
+</style>
+
 hi.
 i am suryansh!
 i’m interested in learning systems, mathematics,
