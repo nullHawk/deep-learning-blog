@@ -8,7 +8,9 @@ math: true
 description:
 ---
 
-Past few months I didn't know anything about mechanistic interpretability, until I applied to the MATS program. I didn't get selected though, but learned a hell lot while writing the research writeup. I thought of sharing the same in a more beginner friendly way, so that more people can get into this field and contribute to it.
+Here's a fun fact: nobody fully understands why large language models work. We know the math, we know the architecture, we can train them. But ask "why did it output this specific token?" and the honest answer is usually a shrug. Mechanistic interpretability is trying to change that.
+
+In this post, I'll cover the core concepts and techniques you need to know to get started: what features and superposition are, how to figure out which parts of the model are responsible for specific behaviors (attribution), how to peek inside and understand what's happening (discovery), and how to actually modify the model based on what you find (intervention).
 
 ---
 
