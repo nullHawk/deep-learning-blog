@@ -15,8 +15,7 @@ order: 4
   }
 </style>
 
-hi.
-i am suryansh!
+hey there!
 i’m interested in learning systems, mathematics,
 physics and comp. neuroscience, astrophysics... maybe, much more ;)
 
