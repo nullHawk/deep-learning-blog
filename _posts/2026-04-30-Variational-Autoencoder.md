@@ -32,7 +32,15 @@ the encoder now outputs two things: $\mu_\phi(x)$ and $\sigma_\phi(x)$. you samp
 
 the loss has two parts:
 
-$$\mathcal{L} = \underbrace{\mathbb{E}_{q(z|x)}[-\log p(x|z)]}_{\text{reconstruction}} + \underbrace{\text{KL}(q(z|x) \,\|\, p(z))}_{\text{regularization}}$$
+$$
+\begin{aligned}
+\mathcal{L}
+&= \underbrace{\mathbb{E}_{q(z \mid x)}
+[-\log p(x \mid z)]}_{\text{reconstruction}} \\
+&\quad + \underbrace{\operatorname{KL}
+(q(z \mid x) \,\Vert\, p(z))}_{\text{regularization}}
+\end{aligned}
+$$
 
 reconstruction term says "decoder should reconstruct $x$ from $z$." KL term says "the per-input distribution shouldn't drift too far from the prior $\mathcal{N}(0, I)$."
 
@@ -46,17 +54,34 @@ this isn't ad-hoc. it falls out of doing variational inference properly.
 
 what we actually want is to model $p(x)$, the distribution over images. by marginalizing:
 
-$$p(x) = \int p(x|z)\, p(z)\, dz$$
+$$p(x) = \int p(x \mid z)\, p(z)\, dz$$
 
-this integral is intractable for any interesting decoder $p(x|z)$. so we can't directly maximize likelihood.
+this integral is intractable for any interesting decoder $p(x \mid z)$. so we can't directly maximize likelihood.
 
-variational inference trick: introduce an approximate posterior $q_\phi(z|x)$ (this is the encoder), and use Jensen's inequality.
+variational inference trick: introduce an approximate posterior $q_\phi(z \mid x)$ (this is the encoder), and use Jensen's inequality.
 
-$$\log p(x) = \log \int q(z|x) \frac{p(x|z)\, p(z)}{q(z|x)}\, dz \;\geq\; \mathbb{E}_q\left[\log \frac{p(x|z)\, p(z)}{q(z|x)}\right]$$
+$$
+\begin{aligned}
+\log p(x)
+&= \log \int q(z \mid x)
+\frac{p(x \mid z)\, p(z)}{q(z \mid x)}\, dz \\
+&\geq
+\mathbb{E}_q\!\left[
+\log \frac{p(x \mid z)\, p(z)}{q(z \mid x)}
+\right]
+\end{aligned}
+$$
 
 expand the right side:
 
-$$\log p(x) \;\geq\; \mathbb{E}_q[\log p(x|z)] - \text{KL}(q(z|x) \,\|\, p(z)) \;:=\; \text{ELBO}$$
+$$
+\begin{aligned}
+\log p(x)
+&\geq \mathbb{E}_q[\log p(x \mid z)] \\
+&\quad - \operatorname{KL}(q(z \mid x) \,\Vert\, p(z)) \\
+&:= \operatorname{ELBO}
+\end{aligned}
+$$
 
 that's the **evidence lower bound**. maximizing ELBO ≈ maximizing $\log p(x)$. the negative ELBO is exactly the VAE loss above.
 
@@ -64,7 +89,10 @@ that's the **evidence lower bound**. maximizing ELBO ≈ maximizing $\log p(x)$.
 
 the gap between $\log p(x)$ and ELBO is *not* zero. it's:
 
-$$\log p(x) - \text{ELBO} = \text{KL}(q_\phi(z|x) \,\|\, p(z|x))$$
+$$
+\log p(x) - \operatorname{ELBO}
+= \operatorname{KL}(q_\phi(z \mid x) \,\Vert\, p(z \mid x))
+$$
 
 i.e. the KL between your approximate posterior (encoder) and the *true* posterior. so when you optimize ELBO, you're simultaneously:
 
@@ -97,11 +125,25 @@ the trick works because the Gaussian belongs to the **location-scale family**. a
 
 there's an alternative way to estimate $\nabla_\phi \mathbb{E}_{q_\phi}[f(z)]$: the **score function estimator** (REINFORCE):
 
-$$\nabla_\phi \mathbb{E}_{q_\phi}[f(z)] = \mathbb{E}_{q_\phi}\!\left[f(z)\, \nabla_\phi \log q_\phi(z)\right]$$
+$$
+\nabla_\phi \mathbb{E}_{q_\phi}[f(z)]
+= \mathbb{E}_{q_\phi}\!\left[
+f(z)\, \nabla_\phi \log q_\phi(z)
+\right]
+$$
 
 this works for *any* distribution, not just location-scale. but variance is brutal. reparameterization gives:
 
-$$\nabla_\phi \mathbb{E}_{p(\varepsilon)}[f(g_\phi(\varepsilon))] = \mathbb{E}_{p(\varepsilon)}\!\left[\nabla_z f(z)\big|_{z=g_\phi(\varepsilon)} \cdot \nabla_\phi g_\phi(\varepsilon)\right]$$
+$$
+\begin{aligned}
+\nabla_\phi \mathbb{E}_{p(\varepsilon)}
+[f(g_\phi(\varepsilon))]
+&= \mathbb{E}_{p(\varepsilon)}\!\left[
+\nabla_z f(z)\big|_{z=g_\phi(\varepsilon)}
+\cdot \nabla_\phi g_\phi(\varepsilon)
+\right]
+\end{aligned}
+$$
 
 the gradient estimator now uses $\nabla_z f$, which carries way more signal than just the scalar value $f(z)$. lower variance = faster convergence. this is *the* reason VAEs use Gaussians (or other reparameterizable distributions) and not arbitrary priors.
 
@@ -115,23 +157,43 @@ in practice the encoder predicts $\log \sigma^2$ rather than $\sigma$ or $\sigma
 
 ## the KL term in closed form
 
-for prior $p(z) = \mathcal{N}(0, I)$ and posterior $q(z|x) = \mathcal{N}(\mu, \sigma^2 I)$ with diagonal covariance, the KL has a clean closed form:
+for prior $p(z) = \mathcal{N}(0, I)$ and posterior $q(z \mid x) = \mathcal{N}(\mu, \sigma^2 I)$ with diagonal covariance, the KL has a clean closed form:
 
-$$\text{KL}(q \,\|\, p) = \frac{1}{2} \sum_{i=1}^d \left( \mu_i^2 + \sigma_i^2 - \log \sigma_i^2 - 1 \right)$$
+$$
+\begin{aligned}
+\operatorname{KL}(q \,\Vert\, p)
+&= \frac{1}{2} \sum_{i=1}^d
+\left(
+\mu_i^2 + \sigma_i^2 \right. \\
+&\qquad\left.
+- \log \sigma_i^2 - 1
+\right)
+\end{aligned}
+$$
 
 no monte carlo needed for this term, it's analytic. only the reconstruction term needs sampling. this is one of the engineering reasons everyone uses Gaussian prior + diagonal Gaussian posterior. the math is just clean.
 
 ## the implicit decoder distribution (a thing nobody tells you)
 
-look at most VAE code. the reconstruction loss is `MSE(x, decoder(z))`. but the ELBO has $\mathbb{E}_q[-\log p(x|z)]$. how does MSE come from a log-likelihood?
+look at most VAE code. the reconstruction loss is `MSE(x, decoder(z))`. but the ELBO has $\mathbb{E}_q[-\log p(x \mid z)]$. how does MSE come from a log-likelihood?
 
 answer: when you use MSE, you're implicitly assuming:
 
-$$p(x|z) = \mathcal{N}(x;\, \text{decoder}(z),\, \sigma_x^2 I)$$
+$$
+p(x \mid z)
+= \mathcal{N}(x;\, \operatorname{decoder}(z),\, \sigma_x^2 I)
+$$
 
 with fixed scalar variance $\sigma_x^2$. then:
 
-$$-\log p(x|z) = \frac{1}{2\sigma_x^2} \|x - \text{decoder}(z)\|^2 + \text{const}$$
+$$
+\begin{aligned}
+-\log p(x \mid z)
+&= \frac{1}{2\sigma_x^2}
+\|x - \operatorname{decoder}(z)\|^2 \\
+&\quad + \text{const}
+\end{aligned}
+$$
 
 the $\sigma_x^2$ acts as a relative weight between reconstruction and KL. **and this is exactly where $\beta$-VAE comes from**. $\beta$ is just $\sigma_x^2$ in disguise.
 
@@ -143,19 +205,22 @@ if you use BCE loss, you're assuming a Bernoulli decoder. for natural images, ne
 
 we want sampling at inference to work: $z \sim p(z) = \mathcal{N}(0, I)$, then `decoder(z)` should give a reasonable image. for this to work, the **aggregated posterior**
 
-$$q(z) = \mathbb{E}_{x \sim p_{data}}[q(z|x)]$$
+$$
+q(z) = \mathbb{E}_{x \sim p_{\text{data}}}
+[q(z \mid x)]
+$$
 
-should match $p(z)$. but the KL term in ELBO only minimizes per-input $\text{KL}(q(z|x) \,\|\, p(z))$, it doesn't directly enforce the aggregated thing.
+should match $p(z)$. but the KL term in ELBO only minimizes per-input $\operatorname{KL}(q(z \mid x) \,\Vert\, p(z))$, it doesn't directly enforce the aggregated thing.
 
 result: $q(z) \neq p(z)$ in general. there are regions of latent space that have prior mass but no encoder ever mapped to. when you sample there, you get garbage. these are the "holes."
 
 this is *the* reason VAE samples look blurry/weird relative to GAN or diffusion samples. it's not a decoder capacity issue. it's a marginal mismatch issue. the encoder paints inside the lines but doesn't fill the canvas.
 
-fixes that work to varying degrees: VampPrior (use a learnable mixture of $q(z|x_k)$ as the prior), normalizing flow priors, hierarchical VAEs (NVAE, VDVAE).
+fixes that work to varying degrees: VampPrior (use a learnable mixture of $q(z \mid x_k)$ as the prior), normalizing flow priors, hierarchical VAEs (NVAE, VDVAE).
 
 ### posterior collapse
 
-if your decoder is powerful enough to model $p(x)$ on its own (e.g. autoregressive decoder for text/audio), the optimizer finds a cheap local minimum: set $q(z|x) = p(z)$ for all $x$. KL term goes to zero. decoder ignores $z$ entirely.
+if your decoder is powerful enough to model $p(x)$ on its own (e.g. autoregressive decoder for text/audio), the optimizer finds a cheap local minimum: set $q(z \mid x) = p(z)$ for all $x$. KL term goes to zero. decoder ignores $z$ entirely.
 
 congrats, you trained an unconditional model with extra steps.
 
@@ -171,7 +236,13 @@ this is the part that bites you hardest if you naively try to put a VAE on top o
 
 rewrite the loss with explicit weight:
 
-$$\mathcal{L} = \underbrace{\mathbb{E}_q[-\log p(x|z)]}_{\text{distortion } D} + \beta \cdot \underbrace{\text{KL}(q(z|x) \,\|\, p(z))}_{\text{rate } R}$$
+$$
+\begin{aligned}
+\mathcal{L} &= D + \beta R \\
+D &= \mathbb{E}_q[-\log p(x \mid z)] \\
+R &= \operatorname{KL}(q(z \mid x) \,\Vert\, p(z))
+\end{aligned}
+$$
 
 this is *literally* the rate-distortion lagrangian from information theory. the VAE is a lossy compressor with rate $R$ (bits used to encode $z$) and distortion $D$ (reconstruction error). $\beta$ controls the tradeoff:
 
