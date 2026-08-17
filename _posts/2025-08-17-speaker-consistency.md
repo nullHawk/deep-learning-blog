@@ -12,9 +12,9 @@ the first hypothesis that comes to mind is that TTS models may have attention si
 
 we studied mid checkpoint of silk-oss an open source TTS model by rumik.ai which extends base LLM to emit neural audio codec tokens. we find that the model doesn’t use speaker tags as attention sink for speaker consistency throughout the utterance, instead the **actual attention sink is <BOS>** token taking **62.7%** of the mass meanwhile the **speaker token gets 0.6%** and **colon after speaker token gets 0.53%** on average.
 
-attention_scores.mp4
+https://github.com/user-attachments/assets/a1de6c29-f6d5-4288-b4e3-6263f0439665
 
-!image.png
+https://github.com/user-attachments/assets/279a56ee-b735-44c0-8148-f9c797a74e0b
 
 speaker token and colon gets comparatively high attention score when generating the first audio token as compared attention scores when generating the remaining audio tokens.
 
@@ -45,13 +45,13 @@ this makes it clear that speaker tokens doesn’t hold up the consistency over t
 
 we found a clue in attention scores throughout the audio token generation… mass on BOS falls while the **mass on the model’s own prior audio climbs from 0.18 to 0.34.** maybe… the speaker identity is not held by the prompt at all, but the model listening to itself.
 
-!image.png
+<img width="1200" height="405" alt="image" src="https://github.com/user-attachments/assets/c2d75db7-724c-46a9-8ccd-c0e5edfb1ffa" />
 
-!image.png
+<img width="1200" height="441" alt="image" src="https://github.com/user-attachments/assets/a352773e-7347-4f53-8281-3012c4457a44" />
 
 to prove this we took a simple approach of using only a sliced prefix from model’s own output. we took audio tokens sample from model’s output but with different speaker and attached it after prompt naming another speaker.
 
-583_DEMO_voice_ira_audio.mp4
+https://github.com/user-attachments/assets/37dfe83b-724e-4ef9-8f76-66006550137f
 
 > the mechanism is auto-regressive self-conditioning with a short handover. the prompt decides the voice and within few seconds the audio stream becomes responsible for it, after that speaker prompt is close to vestigial. swapping it for a different speaker still does not change the voice 92% of the time.
 > 
