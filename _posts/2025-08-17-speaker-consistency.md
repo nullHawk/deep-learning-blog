@@ -1,6 +1,6 @@
 ---
 title: "How does audio language model hold speaker identity throughout an utterance."
-date: 2025-11-18
+date: 2026-08-17
 categories: [Deep Learning, Mechanistic Interpretability]
 tags: [deep-learning, neural-networks, mech-interp, tts-model, voice]
 author: nullHawk
